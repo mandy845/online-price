@@ -117,7 +117,7 @@ def create_products():
     response = {}
 
     if request.method == "POST":
-        name = request.form['name']
+        name = request.form['Name']
         price = request.form['price']
         product_description = request.form['product_description']
         date_created = datetime.datetime.now()
@@ -125,7 +125,7 @@ def create_products():
         with sqlite3.connect('online.db') as conn:
             cursor = conn.cursor()
             cursor.execute("INSERT INTO post("
-                           "name,"
+                           "Name,"
                            "price,"
                            "product_description"
                            "date_created) VALUES(?, ?, ?, ?)", (name, price, product_description, date_created))
