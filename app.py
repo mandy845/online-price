@@ -113,7 +113,6 @@ def user_registration():
 
 
 @app.route('/create-products/', methods=["POST"])
-@jwt_required()
 def create_products():
     response = {}
 
@@ -129,7 +128,7 @@ def create_products():
                            "name,"
                            "price,"
                            "product_description"
-                           "date_created) VALUES(?, ?, ?)", (name, price, product_description, date_created))
+                           "date_created) VALUES(?, ?, ?, ?)", (name, price, product_description, date_created))
             conn.commit()
             response["status_code"] = 201
             response['description'] = "products added successfully"
@@ -143,7 +142,7 @@ def get_products():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM products")
 
-        products= cursor.fetchall()
+        products = cursor.fetchall()
 
     response['status_code'] = 200
     response['data'] = products
@@ -194,8 +193,8 @@ def edit_post(products_id):
     return response
 
 
-@app.route('/get-products/<int:products_id>/', methods=["GET"])
-def get_products(products_id):
+@app.route('/get-product/<int:products_id>/', methods=["GET"])
+def get_product(products_id):
     response = {}
 
     with sqlite3.connect("online.db") as conn:
