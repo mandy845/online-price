@@ -117,7 +117,7 @@ def create_products():
     response = {}
 
     if request.method == "POST":
-        name = request.form['Name']
+        Name = request.form['Name']
         price = request.form['price']
         product_description = request.form['product_description']
         date_created = datetime.datetime.now()
@@ -128,7 +128,7 @@ def create_products():
                            "Name,"
                            "price,"
                            "product_description"
-                           "date_created) VALUES(?, ?, ?, ?)", (name, price, product_description, date_created))
+                           "date_created) VALUES(?, ?, ?, ?)", (Name, price, product_description, date_created))
             conn.commit()
             response["status_code"] = 201
             response['description'] = "products added successfully"
