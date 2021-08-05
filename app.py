@@ -45,10 +45,11 @@ def fetch_users():
 
 def init_products_table():
     with sqlite3.connect('online.db') as conn:
-        conn.execute("CREATE TABLE IF NOT EXISTS post (id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        conn.execute("CREATE TABLE IF NOT EXISTS post"
+                     " (id INTEGER PRIMARY KEY AUTOINCREMENT,"
                      "Name TEXT NOT NULL,"
-                     "products TEXT NOT NULL,"
                      "price_of_product TEXT NOT NULL, "
+                     "type TEXT,"
                      "product_description TEXT NOT NULL)")
     print("products table created successfully.")
 
@@ -119,28 +120,28 @@ def create_products():
     if request.method == "POST":
         Name = request.form['Name']
         price = request.form['price']
+        type_ = request.form['type']
         product_description = request.form['product_description']
-        date_created = datetime.datetime.now()
 
         with sqlite3.connect('online.db') as conn:
             cursor = conn.cursor()
             cursor.execute("INSERT INTO post("
                            "Name,"
-                           "price,"
-                           "product_description"
-                           "date_created) VALUES(?, ?, ?, ?)", (Name, price, product_description, date_created))
+                           "price_of_product,"
+                           "type,"
+                           "product_description) VALUES(?, ?, ?, ?)", (Name, price, type_, product_description))
             conn.commit()
             response["status_code"] = 201
             response['description'] = "products added successfully"
         return response
 
 
-@app.route('/get-products', methods=["GET"])
+@app.route('/get-products/', methods=["GET"])
 def get_products():
     response = {}
     with sqlite3.connect("online.db") as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM products")
+        cursor.execute("SELECT * FROM post")
 
         products = cursor.fetchall()
 
@@ -149,13 +150,13 @@ def get_products():
     return response
 
 
-@app.route("/delete-products/<int:post_id>")
+@app.route("/delete-products/<int:products_id>")
 @jwt_required()
 def delete_products(products_id):
     response = {}
     with sqlite3.connect("online.db") as conn:
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM products WHERE id=" + str(products_id))
+        cursor.execute("DELETE FROM post WHERE id=" + str(products_id))
         conn.commit()
         response['status_code'] = 200
         response['message'] = "product deleted successfully."
@@ -163,7 +164,7 @@ def delete_products(products_id):
 
 
 @app.route('/edit-products/<int:products_id>/', methods=["PUT"])
-@jwt_required()
+#@jwt_required()
 def edit_post(products_id):
     response = {}
 
@@ -176,7 +177,7 @@ def edit_post(products_id):
                 put_data["name"] = incoming_data.get("name")
                 with sqlite3.connect('online.db') as conn:
                     cursor = conn.cursor()
-                    cursor.execute("UPDATE products SET name =? WHERE id=?", (put_data["name"], products_id))
+                    cursor.execute("UPDATE post SET name =? WHERE id=?", (put_data["name"], products_id))
                     conn.commit()
                     response['message'] = "Update was successful"
                     response['status_code'] = 200
@@ -193,16 +194,45 @@ def edit_post(products_id):
     return response
 
 
+@app.route('/filter-product/<type>/', methods=["GET"])
+def filter_product(type):
+    response = {}
+    with sqlite3.connect("online.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM post WHERE type LIKE '%" + type + "%'")
+
+        posts = cursor.fetchall()
+
+    response['status_code'] = 200
+    response['data'] = posts
+    return jsonify(response)
+
+
 @app.route('/get-product/<int:products_id>/', methods=["GET"])
 def get_product(products_id):
     response = {}
 
     with sqlite3.connect("online.db") as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM products WHERE id=" + str(products_id))
+        cursor.execute("SELECT * FROM post WHERE id=" + str(products_id))
 
         response["status_code"] = 200
         response["description"] = "products  retrieved successfully"
         response["data"] = cursor.fetchone()
 
     return jsonify(response)
+
+
+if __name__ == "__main__":
+    app.debug = True
+    app.run()
+
+# with sqlite3.connect('online.db') as conn:
+#     cursor = conn.cursor()
+#     cursor.execute('ALTER TABLE post ADD COLUMN type TEXT')
+#     cursor.execute(
+#         'UPDATE product SET type = "cake" WHERE name = "pancake"')
+#     cursor.execute('SELECT * FROM post')
+#     conn.commit()
+#     results = cursor.fetchall()
+#     print(results)
