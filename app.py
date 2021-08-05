@@ -46,7 +46,7 @@ def fetch_users():
 def init_products_table():
     with sqlite3.connect('online.db') as conn:
         conn.execute("CREATE TABLE IF NOT EXISTS post (id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                     "name TEXT NOT NULL,"
+                     "Name TEXT NOT NULL,"
                      "products TEXT NOT NULL,"
                      "price_of_product TEXT NOT NULL, "
                      "product_description TEXT NOT NULL)")
