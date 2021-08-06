@@ -16,6 +16,7 @@ class User(object):
         self.password = password
 
 
+# create registration and login table for the user
 def init_user_table():
     conn = sqlite3.connect('online.db')
     print("Opened database successfully")
@@ -30,6 +31,7 @@ def init_user_table():
     conn.close()
 
 
+# fetch the information
 def fetch_users():
     with sqlite3.connect('online.db') as conn:
         cursor = conn.cursor()
@@ -43,6 +45,7 @@ def fetch_users():
     return new_data
 
 
+# create table of products
 def init_products_table():
     with sqlite3.connect('online.db') as conn:
         conn.execute("CREATE TABLE IF NOT EXISTS post"
@@ -89,6 +92,7 @@ def protected():
     return '%s' % current_identity
 
 
+# registration info  for postman to get the data through request.form
 @app.route('/user-registration/', methods=["POST"])
 def user_registration():
     response = {}
@@ -151,7 +155,6 @@ def get_products():
 
 
 @app.route("/delete-products/<int:products_id>")
-@jwt_required()
 def delete_products(products_id):
     response = {}
     with sqlite3.connect("online.db") as conn:
@@ -164,7 +167,6 @@ def delete_products(products_id):
 
 
 @app.route('/edit-products/<int:products_id>/', methods=["PUT"])
-#@jwt_required()
 def edit_post(products_id):
     response = {}
 
