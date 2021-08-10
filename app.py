@@ -229,12 +229,3 @@ if __name__ == "__main__":
     app.debug = True
     app.run()
 
-# with sqlite3.connect('online.db') as conn:
-#     cursor = conn.cursor()
-#     cursor.execute('ALTER TABLE post ADD COLUMN type TEXT')
-#     cursor.execute(
-#         'UPDATE product SET type = "cake" WHERE name = "pancake"')
-#     cursor.execute('SELECT * FROM post')
-#     conn.commit()
-#     results = cursor.fetchall()
-#     print(results)
