@@ -99,10 +99,10 @@ def user_registration():
 
     if request.method == "POST":
 
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        username = request.form['username']
-        password = request.form['password']
+        first_name = request.json['first_name']
+        last_name = request.json['last_name']
+        username = request.json['username']
+        password = request.json['password']
 
         with sqlite3.connect("online.db") as conn:
             cursor = conn.cursor()
@@ -122,10 +122,10 @@ def create_products():
     response = {}
 
     if request.method == "POST":
-        Name = request.form['Name']
-        price = request.form['price']
-        type_ = request.form['type']
-        product_description = request.form['product_description']
+        Name = request.json['Name']
+        price = request.json['price']
+        type_ = request.json['type']
+        product_description = request.json['product_description']
 
         with sqlite3.connect('online.db') as conn:
             cursor = conn.cursor()
